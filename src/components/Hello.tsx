@@ -2,7 +2,7 @@ import * as React from "react";
 
 import { load, evaluateFull, MarkovChain } from "quicktype/dist/MarkovChain";
 
-interface MarkovDisplayProps { word: string; }
+interface MarkovDisplayProps { cells: [string, string][]; }
 
 let markovChain: MarkovChain | undefined = undefined;
 function getMarkovChain(): MarkovChain {
@@ -13,8 +13,15 @@ function getMarkovChain(): MarkovChain {
 }
 
 function colorForScore(score: number): string {
-    const g = Math.floor(Math.min(Math.sqrt(score / 0.3) * 255, 255));
-    const r = 255 - g;
+    const s = Math.min(Math.pow(score / 0.3, 1/3), 1.0);
+    let r, g: number;
+    if (s < 0.5) {
+        r = 255;
+        g = Math.floor(s * 2 * 255);
+    } else {
+        r = Math.floor(255 - (s - 0.5) * 2 * 255);
+        g = 255;
+    }
     return `rgb(${r.toString()},${g.toString()},33)`;
 }
 
@@ -23,23 +30,9 @@ class MarkovDisplay extends React.Component<MarkovDisplayProps, {}> {
         super(props);
     }
 
-    public render(): React.ReactNode {
-        const mc = getMarkovChain();
-        const scores = evaluateFull(mc, this.props.word);
-        console.log(scores);
-        const cells: [string, string][] = [];
-        for (let i = 0; i < this.props.word.length; i++) {
-            const c = this.props.word.charAt(i);
-            let color: string;
-            if (i >= mc.depth - 1) {
-                const score = scores[1][i - mc.depth + 1];
-                color = colorForScore(score);
-            } else {
-                color = "white";
-            }
-            cells.push([c, color]);
-        }
-        return <table><tr>{cells.map(([c, color]) => <td style={ { border: "1px solid black", backgroundColor: color } }>{c}</td>)}</tr></table>;
+    public render(): React.ReactNode[] {
+        const cells = this.props.cells;
+        return cells.map(([c, color]) => <td style={{ border: "1px solid black", backgroundColor: color }}>{c}</td>);
     }
 }
 
@@ -52,14 +45,39 @@ export class Hello extends React.Component<{}, HelloState> {
     }
 
     private handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-        this.setState({ word: event.target.value });
+        this.setState({ word: this.state.word + event.target.value });
+    }
+
+    private handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+        const l = this.state.word.length;
+        if (l === 0) return;
+        if (event.keyCode === 8) {
+            this.setState({ word: this.state.word.slice(0, l - 1) });
+        }
     }
 
     public render(): React.ReactNode {
+        const mc = getMarkovChain();
+        const word = this.state.word;
+        const [totalScore, charScores] = evaluateFull(mc, word);
+        const cells: [string, string][] = [];
+        for (let i = 0; i < word.length; i++) {
+            const c = word.charAt(i);
+            let color: string;
+            if (i >= mc.depth - 1) {
+                const score = charScores[i - mc.depth + 1];
+                color = colorForScore(score);
+            } else {
+                color = "white";
+            }
+            cells.push([c, color]);
+        }
+
         return <form>
-                <MarkovDisplay word={this.state.word} />
-                <br />
-                <input value={this.state.word} onChange={e => this.handleChange(e)} />
-            </form>;
+            <table style={{ padding: "5px", backgroundColor: colorForScore(totalScore) }}><tr>
+                <MarkovDisplay cells={cells} />
+                <td><input size={1} value="" onChange={e => this.handleChange(e)} onKeyDown={e => this.handleKeyDown(e)} /></td>
+            </tr></table>
+        </form>;
     }
 }
