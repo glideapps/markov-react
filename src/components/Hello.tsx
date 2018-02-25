@@ -32,7 +32,7 @@ class MarkovDisplay extends React.Component<MarkovDisplayProps, {}> {
 
     public render(): React.ReactNode[] {
         const cells = this.props.cells;
-        return cells.map(([c, color]) => <td style={{ border: "1px solid black", backgroundColor: color }}>{c}</td>);
+        return cells.map(([c, color]) => <td style={{ padding: "0px 2px", border: "1px solid black", backgroundColor: color }}>{c}</td>);
     }
 }
 
@@ -89,11 +89,11 @@ export class Hello extends React.Component<{}, HelloState> {
         }
 
         return <form>
-            <table style={{ padding: "5px", backgroundColor: colorForScore(totalScore) }}><tr>
+            <table style={{ padding: "5px", borderSpacing: "5px", backgroundColor: colorForScore(totalScore), fontSize: 32, fontFamily: "Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace" }}><tr>
                 <MarkovDisplay cells={cells} />
-                <td><input size={1} value="" onChange={e => this.handleChange(e)} onKeyDown={e => this.handleKeyDown(e)} /></td>
+                <td><input style={{ fontSize: "inherit" }} size={1} value="" onChange={e => this.handleChange(e)} onKeyDown={e => this.handleKeyDown(e)} /></td>
             </tr></table>
-            <button type="button" onClick={e => this.handleGenerate()} >Generate</button>
+            { /* <button type="button" onClick={e => this.handleGenerate()} >Generate</button> */ }
         </form>;
     }
 }
