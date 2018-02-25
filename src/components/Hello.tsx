@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { load, evaluateFull, MarkovChain } from "quicktype/dist/MarkovChain";
+import { load, evaluateFull, MarkovChain, generate } from "quicktype/dist/MarkovChain";
 
 interface MarkovDisplayProps { cells: [string, string][]; }
 
@@ -44,16 +44,31 @@ export class Hello extends React.Component<{}, HelloState> {
         this.state = { word: "property" };
     }
 
-    private handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-        this.setState({ word: this.state.word + event.target.value });
+    private append(s: string): void {
+        console.log("appending", s);
+        this.setState({ word: this.state.word + s });
     }
 
-    private handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+    private handleChange(event: React.ChangeEvent<HTMLInputElement>): void {
+        this.append(event.target.value);
+    }
+
+    private handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>): void {
         const l = this.state.word.length;
         if (l === 0) return;
         if (event.keyCode === 8) {
             this.setState({ word: this.state.word.slice(0, l - 1) });
         }
+    }
+
+    private handleGenerate(): void {
+        const mc = getMarkovChain();
+        const word = this.state.word;
+        const l = word.length;
+        if (l < mc.depth - 1) return;
+        const state = word.slice(l - mc.depth + 1);
+        console.log("state is", state);
+        this.append(generate(mc, state, 0.001));
     }
 
     public render(): React.ReactNode {
@@ -78,6 +93,7 @@ export class Hello extends React.Component<{}, HelloState> {
                 <MarkovDisplay cells={cells} />
                 <td><input size={1} value="" onChange={e => this.handleChange(e)} onKeyDown={e => this.handleKeyDown(e)} /></td>
             </tr></table>
+            <button type="button" onClick={e => this.handleGenerate()} >Generate</button>
         </form>;
     }
 }
