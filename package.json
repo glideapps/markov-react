@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack && open index.html",
+    "install": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -20,6 +21,7 @@
     "awesome-typescript-loader": "^3.4.1",
     "source-map-loader": "^0.2.3",
     "typescript": "^2.7.1",
+    "uglifyjs-webpack-plugin": "^1.2.2",
     "webpack": "^3.11.0"
   }
 }
