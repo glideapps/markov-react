@@ -93,7 +93,7 @@ export class Hello extends React.Component<{}, HelloState> {
                 <MarkovDisplay cells={cells} />
                 <td><input size={1} value="" onChange={e => this.handleChange(e)} onKeyDown={e => this.handleKeyDown(e)} /></td>
             </tr></table>
-            <button type="button" onClick={e => this.handleGenerate()} >Generate</button>
+            { /* <button type="button" onClick={e => this.handleGenerate()} >Generate</button> */ }
         </form>;
     }
 }
