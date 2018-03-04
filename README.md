@@ -20,10 +20,6 @@ $ npm run build
 
 ### Deploy
 
-`/docs` is served from the `master` branch.
-
 ```shell
-$ npm run build
-$ git commit -am deploy
-$ git push
+$ npm run deploy
 ```
