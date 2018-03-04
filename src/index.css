@@ -5,17 +5,20 @@ body {
 }
 
 table {
-    padding: 2px;
-    border-spacing: 5px;
+    padding: 10px;
+    border-spacing: 0px;
     font-size: 32px;
     font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
 }
 
-.markov-display td {
-    padding: 0px 6px;
+.markov-display {
     border-radius: 3px;
-    border: 2px solid rgba(0, 0, 0, 0.1);
-    color: #111;
+    border: 2px solid rgba(0, 0, 0, 0.7);
+}
+
+.markov-display td {
+    padding: 4px 10px;
+    color: rgba(0, 0, 0, 0.9);
 }
 
 input {
