@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { load, evaluateFull, MarkovChain, generate } from "quicktype/dist/MarkovChain";
+import { load, evaluateFull, MarkovChain } from "quicktype/dist/MarkovChain";
 
 interface MarkovDisplayProps { cells: [string, string][]; }
 
@@ -13,7 +13,7 @@ function getMarkovChain(): MarkovChain {
 }
 
 function colorForScore(score: number): string {
-    const s = Math.min(Math.pow(score / 0.3, 1/3), 1.0);
+    const s = Math.min(Math.pow(score / 0.3, 1 / 3), 1.0);
     let r, g: number;
     if (s < 0.5) {
         r = 255;
@@ -32,11 +32,11 @@ class MarkovDisplay extends React.Component<MarkovDisplayProps, {}> {
 
     public render(): React.ReactNode[] {
         const cells = this.props.cells;
-        return cells.map(([c, color]) => <td style={{ padding: "0px 2px", border: "1px solid black", backgroundColor: color }}>{c}</td>);
+        return cells.map(([c, color]) => <td key={c} style={{ padding: "0px 2px", border: "1px solid black", backgroundColor: color }}>{c}</td>);
     }
 }
 
-interface HelloState { word: string; };
+interface HelloState { word: string; }
 
 export class Hello extends React.Component<{}, HelloState> {
     constructor() {
@@ -61,15 +61,15 @@ export class Hello extends React.Component<{}, HelloState> {
         }
     }
 
-    private handleGenerate(): void {
-        const mc = getMarkovChain();
-        const word = this.state.word;
-        const l = word.length;
-        if (l < mc.depth - 1) return;
-        const state = word.slice(l - mc.depth + 1);
-        console.log("state is", state);
-        this.append(generate(mc, state, 0.001));
-    }
+    // private handleGenerate(): void {
+    //     const mc = getMarkovChain();
+    //     const word = this.state.word;
+    //     const l = word.length;
+    //     if (l < mc.depth - 1) return;
+    //     const state = word.slice(l - mc.depth + 1);
+    //     console.log("state is", state);
+    //     this.append(generate(mc, state, 0.001));
+    // }
 
     public render(): React.ReactNode {
         const mc = getMarkovChain();
@@ -88,12 +88,14 @@ export class Hello extends React.Component<{}, HelloState> {
             cells.push([c, color]);
         }
 
-        return <form>
-            <table style={{ padding: "5px", borderSpacing: "5px", backgroundColor: colorForScore(totalScore), fontSize: 32, fontFamily: "Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace" }}><tr>
-                <MarkovDisplay cells={cells} />
-                <td><input style={{ fontSize: "inherit" }} size={1} value="" onChange={e => this.handleChange(e)} onKeyDown={e => this.handleKeyDown(e)} /></td>
-            </tr></table>
-            { /* <button type="button" onClick={e => this.handleGenerate()} >Generate</button> */ }
-        </form>;
+        return (
+            <form>
+                <table style={{ padding: "5px", borderSpacing: "5px", backgroundColor: colorForScore(totalScore), fontSize: 32, fontFamily: "Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace" }}><tr>
+                    <MarkovDisplay cells={cells} />
+                    <td><input style={{ fontSize: "inherit" }} size={1} value="" onChange={e => this.handleChange(e)} onKeyDown={e => this.handleKeyDown(e)} /></td>
+                </tr></table>
+                {/* <button type="button" onClick={e => this.handleGenerate()} >Generate</button> */}
+            </form>
+        );
     }
 }
