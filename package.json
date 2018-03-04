@@ -2,6 +2,7 @@
   "name": "markov-react",
   "version": "0.1.0",
   "private": false,
+  "homepage": "https://quicktype.github.io/markov-react",
   "dependencies": {
     "quicktype": "^8.5.88",
     "react": "^16.2.0",
