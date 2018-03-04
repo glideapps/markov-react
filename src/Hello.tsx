@@ -76,16 +76,6 @@ export class Hello extends React.Component<{}, HelloState> {
     }
   }
 
-  // private handleGenerate(): void {
-  //     const mc = getMarkovChain();
-  //     const word = this.state.word;
-  //     const l = word.length;
-  //     if (l < mc.depth - 1) return;
-  //     const state = word.slice(l - mc.depth + 1);
-  //     console.log("state is", state);
-  //     this.append(generate(mc, state, 0.001));
-  // }
-
   public render(): React.ReactNode {
     const mc = getMarkovChain();
     const word = this.state.word;
@@ -128,7 +118,6 @@ export class Hello extends React.Component<{}, HelloState> {
             </td>
           </tr>
         </table>
-        {/* <button type="button" onClick={e => this.handleGenerate()} >Generate</button> */}
       </form>
     );
   }
