@@ -27,27 +27,15 @@ function colorForScore(score: number): string {
   return `rgb(${r.toString()},${g.toString()},33)`;
 }
 
-class MarkovDisplay extends React.Component<MarkovDisplayProps, {}> {
-  constructor(props: MarkovDisplayProps) {
-    super(props);
-  }
-
-  public render(): React.ReactNode[] {
-    const cells = this.props.cells;
-    return cells.map(([c, color]) => (
-      <td
-        key={c}
-        style={{
-          padding: "0px 2px",
-          border: "1px solid black",
-          backgroundColor: color
-        }}
-      >
+const MarkovDisplay = ({ cells }: MarkovDisplayProps) => (
+  <div className="markov-display">
+    {cells.map(([c, backgroundColor]) => (
+      <td key={c} style={{ backgroundColor }}>
         {c}
       </td>
-    ));
-  }
-}
+    ))}
+  </div>
+);
 
 interface HelloState {
   word: string;
@@ -95,23 +83,14 @@ export class Hello extends React.Component<{}, HelloState> {
 
     return (
       <form>
-        <table
-          style={{
-            padding: "5px",
-            borderSpacing: "5px",
-            backgroundColor: colorForScore(totalScore),
-            fontSize: 32,
-            fontFamily:
-              "Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace"
-          }}
-        >
+        <table style={{ backgroundColor: colorForScore(totalScore) }}>
           <tr>
             <MarkovDisplay cells={cells} />
             <td>
               <input
-                style={{ fontSize: "inherit" }}
-                size={1}
+                autoFocus={true}
                 value=""
+                size={1}
                 onChange={e => this.handleChange(e)}
                 onKeyDown={e => this.handleKeyDown(e)}
               />
