@@ -106,7 +106,6 @@ export class App extends React.Component<
 
           <input
             ref={r => (this.input = r as HTMLInputElement)}
-            autoFocus={true}
             value=""
             size={2}
             onChange={e => this.handleChange(e)}
