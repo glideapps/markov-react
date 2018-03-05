@@ -35,16 +35,22 @@ export class Hello extends React.Component<
   {
     word: string;
     sample: number;
+    changed: boolean;
   }
 > {
+  input: HTMLInputElement;
+
   constructor() {
     super({});
-    this.state = { word: initialWord, sample: 0 };
+    this.state = { word: initialWord, sample: 0, changed: false };
   }
 
   private append(s: string): void {
     console.log("appending", s);
-    this.setState({ word: this.state.word + s });
+    this.setState({
+      word: this.state.word + s,
+      changed: true
+    });
   }
 
   private handleChange(event: React.ChangeEvent<HTMLInputElement>): void {
@@ -55,14 +61,18 @@ export class Hello extends React.Component<
     const l = this.state.word.length;
     if (l === 0) return;
     if (event.keyCode === 8) {
-      this.setState({ word: this.state.word.slice(0, l - 1) });
+      this.setState({
+        word: this.state.word.slice(0, l - 1),
+        changed: true
+      });
     }
   }
 
   private shuffle() {
     this.setState({
       word: samples[this.state.sample],
-      sample: (this.state.sample + 1) % samples.length
+      sample: (this.state.sample + 1) % samples.length,
+      changed: true
     });
   }
 
@@ -90,17 +100,21 @@ export class Hello extends React.Component<
         <div className="shuffle">
           <div onClick={() => this.shuffle()}>🔀</div>
         </div>
-        <MarkovDisplay cells={cells} />
-        <input
-          autoFocus={true}
-          value=""
-          size={2}
-          onChange={e => this.handleChange(e)}
-          onKeyDown={e => this.handleKeyDown(e)}
-        />
-        {this.state.word === initialWord ? (
-          <div className="instruction">👈&nbsp;&nbsp;type here</div>
-        ) : null}
+        <div className="input" onClick={() => this.input.focus()}>
+          <MarkovDisplay cells={cells} />
+          <input
+            ref={r => (this.input = r as HTMLInputElement)}
+            autoFocus={true}
+            value=""
+            size={2}
+            onChange={e => this.handleChange(e)}
+            onKeyDown={e => this.handleKeyDown(e)}
+          />
+
+          {!this.state.changed ? (
+            <div className="instruction">(type here)</div>
+          ) : null}
+        </div>
       </div>
     );
   }
