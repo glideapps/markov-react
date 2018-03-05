@@ -23,9 +23,9 @@ function colorForScore(score: number): string {
 const MarkovDisplay = ({ cells }: { cells: Array<[string, string]> }) => (
   <div className="markov-display">
     {cells.map(([c, backgroundColor], i) => (
-      <td key={i} style={{ backgroundColor }}>
+      <div key={i} style={{ backgroundColor }}>
         {c}
-      </td>
+      </div>
     ))}
   </div>
 );
@@ -87,26 +87,20 @@ export class Hello extends React.Component<
         className="outer"
         style={{ backgroundColor: colorForScore(totalScore) }}
       >
-        <table>
-          <tr>
-            <td className="shuffle">
-              <div onClick={() => this.shuffle()}>🔀</div>
-            </td>
-            <MarkovDisplay cells={cells} />
-            <td>
-              <input
-                autoFocus={true}
-                value=""
-                size={2}
-                onChange={e => this.handleChange(e)}
-                onKeyDown={e => this.handleKeyDown(e)}
-              />
-            </td>
-            {this.state.word === initialWord ? (
-              <td className="instruction">👈&nbsp;&nbsp;type here</td>
-            ) : null}
-          </tr>
-        </table>
+        <div className="shuffle">
+          <div onClick={() => this.shuffle()}>🔀</div>
+        </div>
+        <MarkovDisplay cells={cells} />
+        <input
+          autoFocus={true}
+          value=""
+          size={2}
+          onChange={e => this.handleChange(e)}
+          onKeyDown={e => this.handleKeyDown(e)}
+        />
+        {this.state.word === initialWord ? (
+          <div className="instruction">👈&nbsp;&nbsp;type here</div>
+        ) : null}
       </div>
     );
   }
