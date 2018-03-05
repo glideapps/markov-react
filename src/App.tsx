@@ -51,7 +51,7 @@ const MarkovDisplay = ({
   );
 };
 
-export class Hello extends React.Component<
+export class App extends React.Component<
   {},
   {
     word: string;
