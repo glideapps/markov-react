@@ -76,9 +76,10 @@ export class Hello extends React.Component<
   }
 
   private shuffle() {
+    const sample = (this.state.sample + 1) % samples.length;
     this.setState({
-      word: samples[this.state.sample],
-      sample: (this.state.sample + 1) % samples.length
+      word: samples[sample],
+      sample
     });
     this.input.focus();
   }
