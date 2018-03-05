@@ -31,7 +31,7 @@ const MarkovDisplay = ({ cells }: { cells: Array<[string, string]> }) => (
   <div className="markov-display">
     {cells.map(([c, backgroundColor], i) => (
       <div key={i} style={{ backgroundColor }}>
-        {c}
+        {c === " " ? <span>&nbsp;</span> : c}
       </div>
     ))}
   </div>
