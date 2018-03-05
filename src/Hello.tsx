@@ -4,8 +4,15 @@ import { load, evaluateFull } from "quicktype/dist/MarkovChain";
 
 const markovChain = load();
 
-const initialWord = "property";
-const samples = ["name", "giraffe", "a1b2c3d4", "010001010110", "@%#^$%&^*("];
+const samples = [
+  "property",
+  "username",
+  "a1b2c3d4",
+  "010001010110",
+  "giraffe",
+  "@%#^$%&^*(",
+  "phoneNumber"
+];
 
 function colorForScore(score: number): string {
   const s = Math.min(Math.pow(score / 0.3, 1 / 3), 1.0);
@@ -42,7 +49,7 @@ export class Hello extends React.Component<
 
   constructor() {
     super({});
-    this.state = { word: initialWord, sample: 0, changed: false };
+    this.state = { word: samples[0], sample: 0, changed: false };
   }
 
   private append(s: string): void {
@@ -71,9 +78,9 @@ export class Hello extends React.Component<
   private shuffle() {
     this.setState({
       word: samples[this.state.sample],
-      sample: (this.state.sample + 1) % samples.length,
-      changed: true
+      sample: (this.state.sample + 1) % samples.length
     });
+    this.input.focus();
   }
 
   public render(): React.ReactNode {
