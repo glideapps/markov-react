@@ -2,11 +2,10 @@ import * as React from "react";
 
 import { load, evaluateFull } from "quicktype/dist/MarkovChain";
 
-interface MarkovDisplayProps {
-  cells: [string, string][];
-}
-
 const markovChain = load();
+
+const initialWord = "property";
+const samples = ["name", "giraffe", "a1b2c3d4", "010001010110", "@%#^$%&^*("];
 
 function colorForScore(score: number): string {
   const s = Math.min(Math.pow(score / 0.3, 1 / 3), 1.0);
@@ -21,24 +20,26 @@ function colorForScore(score: number): string {
   return `rgb(${r.toString()},${g.toString()},33)`;
 }
 
-const MarkovDisplay = ({ cells }: MarkovDisplayProps) => (
+const MarkovDisplay = ({ cells }: { cells: Array<[string, string]> }) => (
   <div className="markov-display">
-    {cells.map(([c, backgroundColor]) => (
-      <td key={c} style={{ backgroundColor }}>
+    {cells.map(([c, backgroundColor], i) => (
+      <td key={i} style={{ backgroundColor }}>
         {c}
       </td>
     ))}
   </div>
 );
 
-interface HelloState {
-  word: string;
-}
-
-export class Hello extends React.Component<{}, HelloState> {
+export class Hello extends React.Component<
+  {},
+  {
+    word: string;
+    sample: number;
+  }
+> {
   constructor() {
     super({});
-    this.state = { word: "property" };
+    this.state = { word: initialWord, sample: 0 };
   }
 
   private append(s: string): void {
@@ -56,6 +57,13 @@ export class Hello extends React.Component<{}, HelloState> {
     if (event.keyCode === 8) {
       this.setState({ word: this.state.word.slice(0, l - 1) });
     }
+  }
+
+  private shuffle() {
+    this.setState({
+      word: samples[this.state.sample],
+      sample: (this.state.sample + 1) % samples.length
+    });
   }
 
   public render(): React.ReactNode {
@@ -81,6 +89,9 @@ export class Hello extends React.Component<{}, HelloState> {
       >
         <table>
           <tr>
+            <td className="shuffle">
+              <div onClick={() => this.shuffle()}>🔀</div>
+            </td>
             <MarkovDisplay cells={cells} />
             <td>
               <input
@@ -91,6 +102,9 @@ export class Hello extends React.Component<{}, HelloState> {
                 onKeyDown={e => this.handleKeyDown(e)}
               />
             </td>
+            {this.state.word === initialWord ? (
+              <td className="instruction">👈&nbsp;&nbsp;type here</td>
+            ) : null}
           </tr>
         </table>
       </div>
