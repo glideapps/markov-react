@@ -38,6 +38,7 @@ input {
     font-size: inherit;
     border: 1px solid transparent;
     border-top: none;
+    opacity: 0.01;
 }
 
 input:focus {
@@ -57,4 +58,28 @@ input:focus {
 
 .shuffle:hover {
     cursor: pointer;
+}
+
+.caret {
+    position: relative;
+    top: 8px;
+    margin-left: 4px;
+    width: 2px;
+    height: 30px;
+    padding: 0;
+    background-color: #222;
+    animation: blink-animation 1s ease-out infinite;
+    -webkit-animation: blink-animation 1s steps(5, start) infinite;
+}
+
+@keyframes blink-animation {
+    to {
+        visibility: hidden;
+    }
+}
+
+@-webkit-keyframes blink-animation {
+    to {
+        visibility: hidden;
+    }
 }

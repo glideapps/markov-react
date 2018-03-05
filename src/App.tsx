@@ -102,6 +102,8 @@ export class App extends React.Component<
         <div className="input" onClick={() => this.input.focus()}>
           <MarkovDisplay word={this.state.word} charScores={charScores} />
 
+          <div className="caret" />
+
           <input
             ref={r => (this.input = r as HTMLInputElement)}
             autoFocus={true}
