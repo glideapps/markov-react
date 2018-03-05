@@ -1,18 +1,12 @@
 import * as React from "react";
 
-import { load, evaluateFull, MarkovChain } from "quicktype/dist/MarkovChain";
+import { load, evaluateFull } from "quicktype/dist/MarkovChain";
 
 interface MarkovDisplayProps {
   cells: [string, string][];
 }
 
-let markovChain: MarkovChain | undefined = undefined;
-function getMarkovChain(): MarkovChain {
-  if (markovChain === undefined) {
-    markovChain = load();
-  }
-  return markovChain;
-}
+const markovChain = load();
 
 function colorForScore(score: number): string {
   const s = Math.min(Math.pow(score / 0.3, 1 / 3), 1.0);
@@ -65,15 +59,14 @@ export class Hello extends React.Component<{}, HelloState> {
   }
 
   public render(): React.ReactNode {
-    const mc = getMarkovChain();
     const word = this.state.word;
-    const [totalScore, charScores] = evaluateFull(mc, word);
+    const [totalScore, charScores] = evaluateFull(markovChain, word);
     const cells: [string, string][] = [];
     for (let i = 0; i < word.length; i++) {
       const c = word.charAt(i);
       let color: string;
-      if (i >= mc.depth - 1) {
-        const score = charScores[i - mc.depth + 1];
+      if (i >= markovChain.depth - 1) {
+        const score = charScores[i - markovChain.depth + 1];
         color = colorForScore(score);
       } else {
         color = "white";
@@ -82,22 +75,25 @@ export class Hello extends React.Component<{}, HelloState> {
     }
 
     return (
-      <form>
-        <table style={{ backgroundColor: colorForScore(totalScore) }}>
+      <div
+        className="outer"
+        style={{ backgroundColor: colorForScore(totalScore) }}
+      >
+        <table>
           <tr>
             <MarkovDisplay cells={cells} />
             <td>
               <input
                 autoFocus={true}
                 value=""
-                size={1}
+                size={2}
                 onChange={e => this.handleChange(e)}
                 onKeyDown={e => this.handleKeyDown(e)}
               />
             </td>
           </tr>
         </table>
-      </form>
+      </div>
     );
   }
 }
