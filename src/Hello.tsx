@@ -1,5 +1,4 @@
 import * as React from "react";
-
 import { load, evaluateFull } from "quicktype/dist/MarkovChain";
 
 const markovChain = load();
@@ -27,15 +26,30 @@ function colorForScore(score: number): string {
   return `rgb(${r.toString()},${g.toString()},33)`;
 }
 
-const MarkovDisplay = ({ cells }: { cells: Array<[string, string]> }) => (
-  <div className="markov-display">
-    {cells.map(([c, backgroundColor], i) => (
-      <div key={i} style={{ backgroundColor }}>
-        {c === " " ? <span>&nbsp;</span> : c}
-      </div>
-    ))}
-  </div>
-);
+const MarkovDisplay = ({
+  word,
+  charScores
+}: {
+  word: string;
+  charScores: number[];
+}) => {
+  const cells = word.split("").map((c, i) => {
+    if (i >= markovChain.depth - 1) {
+      const score = charScores[i - markovChain.depth + 1];
+      return [c, colorForScore(score)];
+    }
+    return [c, "white"];
+  });
+  return (
+    <div className="markov-display">
+      {cells.map(([c, backgroundColor], i) => (
+        <div key={i} style={{ backgroundColor }}>
+          {c === " " ? <span>&nbsp;</span> : c}
+        </div>
+      ))}
+    </div>
+  );
+};
 
 export class Hello extends React.Component<
   {},
@@ -52,24 +66,18 @@ export class Hello extends React.Component<
     this.state = { word: samples[0], sample: 0, changed: false };
   }
 
-  private append(s: string): void {
-    console.log("appending", s);
+  private handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     this.setState({
-      word: this.state.word + s,
+      word: this.state.word + event.target.value,
       changed: true
     });
   }
 
-  private handleChange(event: React.ChangeEvent<HTMLInputElement>): void {
-    this.append(event.target.value);
-  }
-
-  private handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>): void {
-    const l = this.state.word.length;
-    if (l === 0) return;
-    if (event.keyCode === 8) {
+  private handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+    const { length } = this.state.word;
+    if (length > 0 && event.keyCode === 8) {
       this.setState({
-        word: this.state.word.slice(0, l - 1),
+        word: this.state.word.slice(0, length - 1),
         changed: true
       });
     }
@@ -77,29 +85,12 @@ export class Hello extends React.Component<
 
   private shuffle() {
     const sample = (this.state.sample + 1) % samples.length;
-    this.setState({
-      word: samples[sample],
-      sample
-    });
+    this.setState({ word: samples[sample], sample });
     this.input.focus();
   }
 
   public render(): React.ReactNode {
-    const word = this.state.word;
-    const [totalScore, charScores] = evaluateFull(markovChain, word);
-    const cells: [string, string][] = [];
-    for (let i = 0; i < word.length; i++) {
-      const c = word.charAt(i);
-      let color: string;
-      if (i >= markovChain.depth - 1) {
-        const score = charScores[i - markovChain.depth + 1];
-        color = colorForScore(score);
-      } else {
-        color = "white";
-      }
-      cells.push([c, color]);
-    }
-
+    const [totalScore, charScores] = evaluateFull(markovChain, this.state.word);
     return (
       <div
         className="outer"
@@ -109,7 +100,8 @@ export class Hello extends React.Component<
           <div onClick={() => this.shuffle()}>🔀</div>
         </div>
         <div className="input" onClick={() => this.input.focus()}>
-          <MarkovDisplay cells={cells} />
+          <MarkovDisplay word={this.state.word} charScores={charScores} />
+
           <input
             ref={r => (this.input = r as HTMLInputElement)}
             autoFocus={true}
