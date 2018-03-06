@@ -83,3 +83,36 @@ input:focus {
         visibility: hidden;
     }
 }
+
+@media (max-width: 800px) {
+    body {
+        font-size: 20px;
+    }
+    .shuffle {
+        font-size: 30px;
+    }
+    .input {
+        margin: 0 0 0 14px;
+        padding: 4px 2px;
+    }
+    .outer {
+        padding: 10px;
+    }
+    .caret {
+        visibility: hidden;
+        animation: unset;
+        display: none;
+        top: 0;
+        height: 0;
+    }
+    input {
+        opacity: 1;
+        margin-left: 0;
+    }
+    .instruction {
+        visibility: hidden;
+    }
+    .markov-display div {
+        padding: 2px 6px;
+    }
+}
